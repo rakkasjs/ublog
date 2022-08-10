@@ -16,6 +16,9 @@
 		"deploy": "wrangler publish"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^3.14.1",
+		"@miniflare/kv": "^2.6.0",
+		"@miniflare/storage-memory": "^2.6.0",
 		"@rakkasjs/eslint-config": "0.6.0",
 		"@types/react": "^18.0.15",
 		"@types/react-dom": "^18.0.6",

@@ -9,3 +9,7 @@ workers_dev = true
 
 [site]
 bucket = "./dist/client"
+
+[[kv_namespaces]]
+binding = "KV_POSTS"
+id = "<YOUR_KV_POSTS_NAMESPACE_ID>"
