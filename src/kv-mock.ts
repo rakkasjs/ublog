@@ -5,19 +5,19 @@ export const postStore = new KVNamespace(new MemoryStorage());
 
 const MOCK_POSTS = [
 	{
-		key: "1",
+		key: "z1",
 		content: "Hello, world!",
 		author: "Jane Doe",
 		postedAt: "2022-08-10T14:34:00.000Z",
 	},
 	{
-		key: "2",
+		key: "z2",
 		content: "Hello ublog!",
 		author: "Cody Reimer",
 		postedAt: "2022-08-10T13:27:00.000Z",
 	},
 	{
-		key: "3",
+		key: "z3",
 		content: "Wow, this is pretty cool!",
 		author: "Zoey Washington",
 		postedAt: "2022-08-10T12:00:00.000Z",
