@@ -1,7 +1,14 @@
-import { ActionHandler, useServerSideQuery, PageProps } from "rakkasjs";
+import {
+	ActionHandler,
+	useServerSideQuery,
+	PageProps,
+	ClientOnly,
+} from "rakkasjs";
 
 export default function HomePage({ actionData }: PageProps) {
-	const { data: posts } = useServerSideQuery(async (ctx) => {
+	const {
+		data: { posts, user },
+	} = useServerSideQuery(async (ctx) => {
 		const list = await ctx.locals.postStore.list<{
 			author: string;
 			postedAt: string;
@@ -15,7 +22,7 @@ export default function HomePage({ actionData }: PageProps) {
 			)
 		);
 
-		return posts;
+		return { posts, user: ctx.locals.user };
 	});
 
 	return (
@@ -26,34 +33,47 @@ export default function HomePage({ actionData }: PageProps) {
 					<li key={post.key.name}>
 						<div>{post.content}</div>
 						<div>
-							<i>{post.key.metadata!.author}</i>
+							<i>{post.key.metadata?.author ?? "Unknown author"}</i>
 							&nbsp;
 							<span>
-								{new Date(post.key.metadata!.postedAt).toLocaleString()}
+								{post.key.metadata?.postedAt ? (
+									<ClientOnly fallback={null}>
+										{new Date(post.key.metadata.postedAt).toLocaleString()}
+									</ClientOnly>
+								) : (
+									"Unknown date"
+								)}
 							</span>
 						</div>
 						<hr />
 					</li>
 				))}
 			</ul>
-			<form method="POST">
-				<p>
-					<textarea
-						name="content"
-						rows={4}
-						defaultValue={actionData?.content}
-					/>
-				</p>
 
-				{actionData?.error && <p>{actionData.error}</p>}
+			{user && (
+				<form method="POST">
+					<p>
+						<textarea
+							name="content"
+							rows={4}
+							defaultValue={actionData?.content}
+						/>
+					</p>
 
-				<button type="submit">Submit</button>
-			</form>
+					{actionData?.error && <p>{actionData.error}</p>}
+
+					<button type="submit">Submit</button>
+				</form>
+			)}
 		</main>
 	);
 }
 
 export const action: ActionHandler = async (ctx) => {
+	if (!ctx.requestContext.locals.user) {
+		return { data: { error: "You must be signed in to post." } };
+	}
+
 	// Retrieve the form data
 	const data = await ctx.requestContext.request.formData();
 	const content = data.get("content");
@@ -77,7 +97,7 @@ export const action: ActionHandler = async (ctx) => {
 		metadata: {
 			// We don't have login/signup yet,
 			// so we'll just make up a user name
-			author: "Arden Eberhardt",
+			author: ctx.requestContext.locals.user.login,
 			postedAt: new Date().toISOString(),
 		},
 	});
