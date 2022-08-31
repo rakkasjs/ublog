@@ -3,6 +3,7 @@ import {
 	useServerSideQuery,
 	PageProps,
 	ClientOnly,
+	Head,
 } from "rakkasjs";
 
 export default function HomePage({ actionData }: PageProps) {
@@ -26,16 +27,18 @@ export default function HomePage({ actionData }: PageProps) {
 	});
 
 	return (
-		<main>
-			<h1>Posts</h1>
+		<main className="max-w-4xl m-auto">
+			<Head title="uBlog" />
 			<ul>
 				{posts.map((post) => (
-					<li key={post.key.name}>
-						<div>{post.content}</div>
+					<li key={post.key.name} className="m-5 p-5 b">
+						<div className="mb-3">{post.content}</div>
 						<div>
-							<i>{post.key.metadata?.author ?? "Unknown author"}</i>
+							<i className="color-amber-7">
+								{post.key.metadata?.author ?? "Unknown author"}
+							</i>
 							&nbsp;
-							<span>
+							<span className="color-gray-6 text-3 float-right">
 								{post.key.metadata?.postedAt ? (
 									<ClientOnly fallback={null}>
 										{new Date(post.key.metadata.postedAt).toLocaleString()}
@@ -45,24 +48,33 @@ export default function HomePage({ actionData }: PageProps) {
 								)}
 							</span>
 						</div>
-						<hr />
 					</li>
 				))}
 			</ul>
 
 			{user && (
-				<form method="POST">
+				<form method="POST" className="w-full p-5">
 					<p>
-						<textarea
-							name="content"
-							rows={4}
-							defaultValue={actionData?.content}
-						/>
+						<label>
+							What&apos;s on your mind?
+							<br />
+							<textarea
+								className="b w-full p-2"
+								name="content"
+								rows={4}
+								defaultValue={actionData?.content}
+							/>
+						</label>
 					</p>
 
 					{actionData?.error && <p>{actionData.error}</p>}
 
-					<button type="submit">Submit</button>
+					<button
+						type="submit"
+						className="px-4 py-2 bg-amber-5 b-rounded float-right hover:bg-amber-3"
+					>
+						Submit
+					</button>
 				</form>
 			)}
 		</main>

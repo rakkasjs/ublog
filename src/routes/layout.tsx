@@ -1,3 +1,5 @@
+import "@unocss/reset/tailwind.css";
+import "uno.css";
 import { LayoutProps, useServerSideQuery } from "rakkasjs";
 
 export default function MainLayout({ children }: LayoutProps) {
@@ -11,20 +13,22 @@ export default function MainLayout({ children }: LayoutProps) {
 
 	return (
 		<>
-			<header>
-				<strong>uBlog</strong>
-				<span style={{ float: "right" }}>
+			<header className="px-5 py-5 b-b bg-amber flex justify-between">
+				<strong className="color-amber-9">uBlog</strong>
+				<span>
 					{user ? (
-						<span>
-							<img src={user.avatar_url} width={32} />
-							&nbsp;
-							{user.name}
-							<form method="POST" action="/logout">
-								<button type="submit">Sign out</button>
+						<div className="flex items-center">
+							<img src={user.avatar_url} width={32} className="rounded-full" />
+							<span className="color-amber-8 ml-3">{user.name}</span>
+							<form method="POST" action="/logout" className="ml-3">
+								<button type="submit" className="color-red-8 hover:color-red-6">
+									Sign out
+								</button>
 							</form>
-						</span>
+						</div>
 					) : (
 						<a
+							className="color-red-8 hover:color-red-6"
 							href={
 								"https://github.com/login/oauth/authorize" +
 								`?client_id=${clientId}` +
@@ -35,7 +39,6 @@ export default function MainLayout({ children }: LayoutProps) {
 						</a>
 					)}
 				</span>
-				<hr />
 			</header>
 			{children}
 		</>
